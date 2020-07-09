@@ -11,6 +11,8 @@ import model.entities.Reservation;
 public class Program {
 
 	//Primeira solução : muito ruim, tudo na clase do prog principal
+	//Segunda solução : ruim, delega a funçao de retornar erro à classe
+	//reservation, mas não usa o tratamento de exceções
 	public static void main(String[] args) throws ParseException {
 		
 		Scanner sc = new Scanner(System.in);
@@ -38,19 +40,14 @@ public class Program {
 			System.out.println("Check-out date (dd/mm/yyyy): ");
 			checkOut = sdf.parse(sc.next());
 			
-			reservation.updateDates(checkIn, checkOut);
-			
-			Date now = new Date();
-			if(checkIn.before(now) || checkOut.before(now)) {
-				System.out.println("Error in reservation: Reservation dates for update must be future");	
-			}
-			else if(!checkOut.after(checkIn)) {
-				System.out.println("Error in reservation: Check-out date must be after check-in date");
+			String error = reservation.updateDates(checkIn, checkOut);
+			if(error != null) {
+				System.out.println("Error in reservation: " + error);
 			}
 			else {
-				reservation.updateDates(checkIn, checkOut);
 				System.out.println("Reservation: " + reservation);
 			}
 		}
+		sc.close();
 	}
 }
